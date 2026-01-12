@@ -196,37 +196,35 @@ page {
 }
 
 .user-nick {
-  font-weight: bold;
-  color: #fed7aa; /* 金色昵称 */
-  font-size: 26rpx;
+  font-weight: 500;
+  color: #fed7aa; /* 个人中心列表风格：灰色 */
+  font-size: 24rpx; /* 个人中心列表风格：小字号 */
 }
 
 .detail-type {
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
-  background: rgba(255, 255, 255, 0.15);
-  font-size: 20rpx;
-  color: #fff;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 22rpx; /* 个人中心列表风格 */
+  color: #fca5a5; /* 个人中心列表风格 */
 }
 
+/* 复用个人中心列表的标签颜色逻辑 */
+.tag-mood { color: #fca5a5; background: rgba(252, 165, 165, 0.15); }
+.tag-study { color: #93c5fd; background: rgba(147, 197, 253, 0.15); }
+.tag-career { color: #fcd34d; background: rgba(252, 211, 77, 0.15); }
+.tag-love { color: #f9a8d4; background: rgba(249, 168, 212, 0.15); }
+
 .detail-time {
-  color: rgba(255, 255, 255, 0.5);
+  color: #9ca3af; /* 个人中心列表风格 */
   font-size: 22rpx;
 }
 
 .action-row {
-  /* margin-top: 10rpx; 移除之前的顶部间距，因为现在在同一行了 */
   display: flex;
-  /* justify-content: flex-end; 移除右对齐，因为 detail-row 已经是 space-between */
 }
 
-.like-btn {
-  background: rgba(244, 63, 94, 0.2); /* 红色背景 */
-  padding: 8rpx 24rpx;
-  border-radius: 30rpx;
-  font-size: 24rpx;
-  color: #fda4af;
-  border: 1px solid rgba(244, 63, 94, 0.3);
-  display: flex;
-  align-items: center;
+.like-text {
+  color: #f87171; /* 个人中心列表风格：红色 */
+  font-size: 22rpx;
 }

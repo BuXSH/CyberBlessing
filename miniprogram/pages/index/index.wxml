@@ -34,7 +34,7 @@
             <view class="detail-row">
               <text class="detail-time">{{item.formattedTime}}</text>
               <view class="action-row" catchtap="onTapSendEnergy" data-id="{{item.blessingId}}">
-                <text class="like-btn">❤️ {{item.likeCount}}</text>
+                <text class="like-text">❤️ {{item.likeCount}}</text>
               </view>
             </view>
           </view>
