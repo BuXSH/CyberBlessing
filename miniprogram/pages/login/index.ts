@@ -86,9 +86,6 @@ Page({
 
   /** 点击注册（跳转到注册页） */
   onRegister() {
-    // 添加震动反馈
-    wx.vibrateShort({ type: 'light' })
-
     wx.navigateTo({
       url: '/pages/register/index'
     })

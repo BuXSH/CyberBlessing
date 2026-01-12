@@ -2,7 +2,7 @@
   <view class="header">
     <view class="header-title-row">
       <text class="title">赛博祈福墙</text>
-      <text class="title-badge">Beta</text>
+      <text class="title-badge">1.0.0</text>
     </view>
     <text class="subtitle">已汇聚 {{blessingTotal}} 条心愿</text>
   </view>

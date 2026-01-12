@@ -258,10 +258,15 @@
   color: #fca5a5;
 }
 
-.tag-mood { color: #fca5a5; background: rgba(252, 165, 165, 0.15); }
+.tag-mood { color: #ffffff; background: rgba(252, 165, 165, 0.15); }
 .tag-study { color: #93c5fd; background: rgba(147, 197, 253, 0.15); }
 .tag-career { color: #fcd34d; background: rgba(252, 211, 77, 0.15); }
 .tag-love { color: #f9a8d4; background: rgba(249, 168, 212, 0.15); }
+.tag-life { color: #86efac; background: rgba(134, 239, 172, 0.15); }
+.tag-family { color: #fdba74; background: rgba(253, 186, 116, 0.15); }
+.tag-health { color: #67e8f9; background: rgba(103, 232, 249, 0.15); }
+.tag-friendship { color: #f0abfc; background: rgba(196, 181, 253, 0.15); }
+.tag-festival { color: #fca5a5; background: rgba(240, 171, 252, 0.15); }
 
 .blessing-time {
   color: #9ca3af;

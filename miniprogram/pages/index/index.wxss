@@ -18,7 +18,7 @@ page {
 
 .header-title-row {
   display: flex; /* 标题行使用水平弹性布局 */
-  align-items: baseline; /* 标题文字与 Beta 徽标按文字基线对齐 */
+  align-items: baseline; /* 标题文字与 1.0.0 徽标按文字基线对齐 */
 }
 
 .title {
@@ -33,7 +33,7 @@ page {
   border-radius: 999rpx; /* 极大圆角，做成圆角胶囊效果 */
   font-size: 20rpx; /* 徽标文字略小，不抢主标题注意力 */
   color: #fed7aa; /* 徽标文字为偏金色，突出“标签感” */
-  border: 1rpx solid rgba(248, 171, 119, 0.9); /* 金色边框，强化 Beta 徽标视觉边界 */
+  border: 1rpx solid rgba(248, 171, 119, 0.9); /* 金色边框，强化 1.0.0 徽标视觉边界 */
 }
 
 .subtitle {
@@ -210,15 +210,20 @@ page {
 }
 
 /* 复用个人中心列表的标签颜色逻辑 */
-.tag-mood { color: #fca5a5; background: rgba(252, 165, 165, 0.15); }
+.tag-mood { color: #ffffff; background: rgba(252, 165, 165, 0.15); }
 .tag-study { color: #93c5fd; background: rgba(147, 197, 253, 0.15); }
 .tag-career { color: #fcd34d; background: rgba(252, 211, 77, 0.15); }
 .tag-love { color: #f9a8d4; background: rgba(249, 168, 212, 0.15); }
+.tag-life { color: #86efac; background: rgba(134, 239, 172, 0.15); }
+.tag-family { color: #fdba74; background: rgba(253, 186, 116, 0.15); }
+.tag-health { color: #67e8f9; background: rgba(103, 232, 249, 0.15); }
+.tag-friendship { color: #f0abfc; background: rgba(196, 181, 253, 0.15); }
+.tag-festival { color: #fca5a5; background: rgba(240, 171, 252, 0.15); }
 
 .detail-time {
   color: #9ca3af; /* 个人中心列表风格 */
   font-size: 22rpx;
-}
+}s
 
 .action-row {
   display: flex;
