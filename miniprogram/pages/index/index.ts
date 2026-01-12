@@ -257,14 +257,18 @@ Component({
       })
     },
 
-    /** 点击单条祈福卡片，占位后续查看详情或跳转逻辑 */
-    onTapBlessing(e: any) {
-      const id = e.currentTarget.dataset.id
-      const current = this.data.blessings.find((item: any) => item.id === id)
-      if (!current) return
-      wx.showToast({
-        icon: 'none',
-        title: '后续可以在这里查看详情',
+    /** 点击单条祈福卡片，暂停弹幕并显示详情 */
+    onTapBullet(e: any) {
+      const bulletId = e.currentTarget.dataset.bulletId
+      this.setData({
+        pausedBulletId: bulletId
+      })
+    },
+
+    /** 恢复弹幕播放（点击遮罩层时） */
+    onResume() {
+      this.setData({
+        pausedBulletId: ''
       })
     },
 
@@ -511,6 +515,18 @@ Component({
       const top = laneIndex * laneHeight
 
       // 5. 构建弹幕实例对象
+      // 简单格式化时间
+      let formattedTime = ''
+      if (blessing.createdAt) {
+        const date = new Date(blessing.createdAt)
+        const year = date.getFullYear()
+        const m = (date.getMonth() + 1).toString().padStart(2, '0')
+        const d = date.getDate().toString().padStart(2, '0')
+        const h = date.getHours().toString().padStart(2, '0')
+        const min = date.getMinutes().toString().padStart(2, '0')
+        formattedTime = `${year}-${m}-${d} ${h}:${min}`
+      }
+
       const bullet = {
         bulletId,
         blessingId: blessing.id,
@@ -518,7 +534,7 @@ Component({
         content: blessing.content,
         userNick: blessing.userNick,
         isAnonymous: blessing.isAnonymous,
-        timeText: blessing.timeText,
+        formattedTime,
         likeCount: blessing.likeCount,
         laneIndex,
         top,
@@ -537,6 +553,14 @@ Component({
         // 执行清理：从 data.bullets 中移除该弹幕
         // 注意：此处重新获取 this.data.bullets，确保操作的是最新数组
         const current = this.data.bullets || []
+        
+        // 如果当前被清理的弹幕正好是被暂停的那一条，则需要重置暂停状态
+        if (this.data.pausedBulletId === bulletId) {
+          this.setData({
+            pausedBulletId: ''
+          })
+        }
+
         const next = current.filter((item: any) => item.bulletId !== bulletId)
         
         // 如果组件已卸载或数据异常，则不执行 setData

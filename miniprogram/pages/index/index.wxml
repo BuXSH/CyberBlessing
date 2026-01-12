@@ -7,6 +7,41 @@
     <text class="subtitle">已汇聚 {{blessingTotal}} 条心愿</text>
   </view>
 
+  <!-- 遮罩层，用于点击空白处恢复弹幕 -->
+  <view 
+    class="mask" 
+    wx:if="{{pausedBulletId}}" 
+    bindtap="onResume"
+    catchtouchmove="true"
+  ></view>
+
+  <!-- 独立的详情弹窗，用于展示被点击的弹幕 -->
+  <view class="detail-popup" wx:if="{{pausedBulletId}}" catchtouchmove="true">
+     <block wx:for="{{bullets}}" wx:key="bulletId">
+        <view 
+          class="blessing-card detail-card" 
+          wx:if="{{item.bulletId === pausedBulletId}}"
+        >
+          <view class="card-content">
+            <text class="content-text">{{item.content}}</text>
+          </view>
+          
+          <view class="detail-info">
+            <view class="detail-row">
+              <text class="user-nick">@{{item.userNick || '神秘人'}}</text>
+              <text class="detail-type tag-{{item.type}}">{{item.type}}</text>
+            </view>
+            <view class="detail-row">
+              <text class="detail-time">{{item.formattedTime}}</text>
+              <view class="action-row" catchtap="onTapSendEnergy" data-id="{{item.blessingId}}">
+                <text class="like-btn">❤️ {{item.likeCount}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+     </block>
+  </view>
+
   <!-- 祈福弹幕区域 -->
   <view class="wall-scroll">
     <!-- 遍历当前正在飞行的弹幕实例，按轨道位置和动画时长渲染 -->
@@ -14,10 +49,10 @@
       <!-- 单条祈福弹幕卡片，绝对定位到对应轨道并绑定点击事件 -->
       <!-- 单条祈福弹幕卡片：整张卡片的外层容器 -->
       <view
-        class="blessing-card danmaku-card"
+        class="blessing-card danmaku-card {{item.bulletId === pausedBulletId ? 'hidden-target' : ''}}"
         style="top: {{item.top}}rpx; animation-duration: {{item.duration}}ms;"
-        data-id="{{item.blessingId}}"
-        bindtap="onTapBlessing"
+        data-bullet-id="{{item.bulletId}}"
+        bindtap="onTapBullet"
       >
         <!-- 卡片正文区域：承载完整祈福文案 -->
         <view class="card-content">

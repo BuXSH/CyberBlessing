@@ -83,6 +83,7 @@ page {
   animation-timing-function: linear; /* 匀速移动，贴近真实弹幕效果 */
   animation-iteration-count: 1; /* 每条弹幕只播放一次 */
   animation-fill-mode: forwards; /* 动画结束后保持在终点位置，避免闪回起点 */
+  transition: background 0.3s, border 0.3s, box-shadow 0.3s; /* 状态切换时的过渡效果 */
 }
 
 /** 弹幕横向位移动画：从右向左平移，确保位移距离涵盖“屏幕宽度+自身宽度” */
@@ -115,6 +116,117 @@ page {
   align-items: center; /* 垂直居中文本 */
   justify-content: center; /* 水平居中文本 */
   color: #ffffff; /* 按钮文字为近白色，与渐变背景形成对比 */
+  z-index: 900; /* 确保按钮在普通弹幕之上，但在遮罩之下 */
 }
 
+/* ================== 新增交互样式 ================== */
 
+/* 遮罩层 */
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 暂停时，原弹幕卡片隐藏（视觉上被详情弹窗取代） */
+.danmaku-card.hidden-target {
+  opacity: 0; /* 保持占位，但不可见 */
+  animation-play-state: paused !important; /* 同时暂停它的位置移动 */
+}
+
+/* 详情弹窗容器 */
+.detail-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2000; /* 高于遮罩层 */
+  width: 80vw;
+  max-width: 80vw;
+  min-width: 300rpx;
+}
+
+/* 详情卡片样式 */
+.detail-card {
+  background: rgba(30, 10, 10, 0.95);
+  border: 1px solid rgba(254, 215, 170, 0.3);
+  box-shadow: 0 0 40rpx rgba(0, 0, 0, 0.8);
+  white-space: normal; /* 允许文字换行 */
+  padding: 32rpx;
+  animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* 详细信息区域 */
+.detail-info {
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 24rpx;
+}
+
+.user-nick {
+  font-weight: bold;
+  color: #fed7aa; /* 金色昵称 */
+  font-size: 26rpx;
+}
+
+.detail-type {
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  background: rgba(255, 255, 255, 0.15);
+  font-size: 20rpx;
+  color: #fff;
+}
+
+.detail-time {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 22rpx;
+}
+
+.action-row {
+  /* margin-top: 10rpx; 移除之前的顶部间距，因为现在在同一行了 */
+  display: flex;
+  /* justify-content: flex-end; 移除右对齐，因为 detail-row 已经是 space-between */
+}
+
+.like-btn {
+  background: rgba(244, 63, 94, 0.2); /* 红色背景 */
+  padding: 8rpx 24rpx;
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  color: #fda4af;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  display: flex;
+  align-items: center;
+}
