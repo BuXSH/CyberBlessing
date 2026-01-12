@@ -22,6 +22,9 @@ Component({
      * @param e 事件对象，e.detail.value 包含选中的索引值
      */
     onTypeChange(e: any) {
+      // 添加震动反馈
+      wx.vibrateShort({ type: 'light' })
+
       const index = e.detail.value
       this.setData({
         typeIndex: index,
@@ -44,6 +47,9 @@ Component({
      * @param e 事件对象，e.detail.value 为开关的布尔值状态
      */
     onAnonymousChange(e: any) {
+      // 添加震动反馈
+      wx.vibrateShort({ type: 'light' })
+
       const checked = e.detail.value
       this.setData({
         isAnonymous: checked,
