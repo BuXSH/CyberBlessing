@@ -33,6 +33,9 @@ Page({
 
   /** 点击注册 */
   onRegister() {
+    // 添加震动反馈
+    wx.vibrateShort({ type: 'light' })
+
     if (!this.data.canSubmit) return
 
     const { username, nick, password, confirmPassword } = this.data

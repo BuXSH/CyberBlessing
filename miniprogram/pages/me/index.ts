@@ -59,6 +59,9 @@ Component({
     canSwipe: false as any,
 
     onTapLogin() {
+      // 添加震动反馈
+      wx.vibrateShort({ type: 'light' })
+
       wx.navigateTo({
         url: '/pages/login/index',
         fail: () => {

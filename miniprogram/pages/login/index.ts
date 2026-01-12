@@ -26,6 +26,9 @@ Page({
 
   /** 点击登录 */
   onLogin() {
+    // 添加震动反馈
+    wx.vibrateShort({ type: 'light' })
+
     if (!this.data.canSubmit) return
 
     const { username, password } = this.data
@@ -83,6 +86,9 @@ Page({
 
   /** 点击注册（跳转到注册页） */
   onRegister() {
+    // 添加震动反馈
+    wx.vibrateShort({ type: 'light' })
+
     wx.navigateTo({
       url: '/pages/register/index'
     })
