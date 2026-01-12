@@ -221,7 +221,7 @@ Component({
           console.error('fetchBlessingsFromServer: request failed', err) 
           wx.showToast({
             icon: 'none', 
-            title: '加载祈福列表失败', 
+            title: '服务器挂掉了，稍等一会，我会搞定', 
           })
         },
       })
