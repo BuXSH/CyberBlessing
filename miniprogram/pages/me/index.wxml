@@ -103,7 +103,9 @@
               </view>
               <view class="blessing-info-row">
                 <text class="blessing-time">{{item.createdAtFormatted}}</text>
-                <text class="blessing-stats-text">❤️ {{item.likeCount}}</text>
+                <view catchtap="onTapUnlike" data-id="{{item.id}}">
+                  <text class="blessing-stats-text">❤️ {{item.likeCount}}</text>
+                </view>
               </view>
             </view>
             

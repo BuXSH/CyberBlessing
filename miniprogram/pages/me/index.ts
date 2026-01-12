@@ -260,6 +260,60 @@ Component({
       })
     },
 
+    /** 取消点赞 */
+    onTapUnlike(e: any) {
+      const id = e.currentTarget.dataset.id
+      if (!id) return
+
+      const app = getApp<IAppOption>()
+      const token = app.globalData.token
+      if (!token) return
+
+      wx.showModal({
+        title: '提示',
+        content: '确定要取消点赞吗？',
+        success: (res) => {
+          if (res.confirm) {
+             this.doUnlike(id, token)
+          }
+        }
+      })
+    },
+
+    doUnlike(id: string, token: string) {
+      wx.showLoading({ title: '处理中' })
+      wx.request({
+        url: `${ME_BACKEND_BASE_URL}/api/blessings/${id}/like`,
+        method: 'DELETE',
+        header: {
+          'Authorization': `Bearer ${token}`
+        },
+        success: (res: any) => {
+            wx.hideLoading()
+            if (res.statusCode === 200) {
+                // Remove from list
+                const newLikedList = this.data.myLikedBlessings.filter((item: any) => item.id !== id)
+                this.setData({
+                    myLikedBlessings: newLikedList
+                })
+                wx.showToast({ title: '已取消', icon: 'success' })
+            } else {
+                 if (res.statusCode === 404) {
+                     wx.showToast({ title: '祝福不存在', icon: 'none' })
+                 } else if (res.statusCode === 400) {
+                     wx.showToast({ title: '尚未点赞', icon: 'none' })
+                 } else {
+                     wx.showToast({ title: '取消失败', icon: 'none' })
+                 }
+            }
+        },
+        fail: () => {
+            wx.hideLoading()
+            wx.showToast({ title: '网络错误', icon: 'none' })
+        }
+      })
+    },
+
     /** 下拉刷新（我的祝福） */
     onPullDownRefreshMyLikedBlessings() {
       this.setData({ isRefreshingLiked: true })
