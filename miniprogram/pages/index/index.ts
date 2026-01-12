@@ -312,10 +312,50 @@ Component({
       })
 
       /** 将点赞结果同步到服务器后端，保证数据在服务端累计 */
+      const app = getApp<any>()
+      const token = app.globalData.token
+      const header: any = {}
+      if (token) {
+        header['Authorization'] = `Bearer ${token}`
+      }
+
       wx.request({
         url: `${INDEX_BACKEND_BASE_URL}/api/blessings/${id}/like`,
         method: 'POST',
+        header,
         success: (res: any) => {
+          if (res.statusCode === 400) {
+            wx.showToast({
+               icon: 'none',
+               title: '您已经点过赞啦',
+            })
+            // 回滚本地乐观更新
+             const rollbackBlessings = this.data.blessings.map((item: any) => {
+              if (item.id === id) {
+                return {
+                  ...item,
+                  likeCount: item.likeCount - 1,
+                }
+              }
+              return item
+            })
+            let rollbackBullets = this.data.bullets || []
+            rollbackBullets = rollbackBullets.map((item: any) => {
+              if (item.blessingId === id) {
+                return {
+                  ...item,
+                  likeCount: item.likeCount - 1,
+                }
+              }
+              return item
+            })
+            this.setData({
+              blessings: rollbackBlessings,
+              bullets: rollbackBullets,
+            })
+            return
+          }
+
           const data = res.data || {}
           const likeCount = typeof data.likeCount === 'number' ? data.likeCount : null
 
