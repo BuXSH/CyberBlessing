@@ -1,11 +1,14 @@
 /** “我”页整体样式与基础排版：与首页 header 保持统一的左右留白与顶部空间 */
 .me-page {
   height: 100vh;
-  padding: 0rpx 32rpx 40rpx 32rpx; /* 顶部留白交给 me-header，自身只负责左右与底部内边距 */
+  padding: 0rpx 32rpx 0rpx 32rpx; /* 顶部留白交给 me-header，自身只负责左右与底部内边距 */
   box-sizing: border-box;
   background: radial-gradient(circle at 100% 0%, #fecaca 0, #22010a 40%) fixed;
   background-color: #22010a;
   color: #fee2e2;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /** 个人页头部容器：与首页 .header 一样在顶部预留导航栏高度 */
@@ -30,6 +33,20 @@
 
 .me-section {
   margin-top: 16rpx;
+  /* 恢复 Flex 布局，因为 me-section 是 me-lists-wrapper 的父容器，它需要撑满剩余空间 */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.me-lists-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .login-entry {
@@ -93,7 +110,7 @@
 .user-nick {
   font-size: 36rpx;
   font-weight: 600;
-  color: #fee2e2;
+  color: #fed7aa;
   margin-bottom: 8rpx;
 }
 
@@ -115,6 +132,7 @@
   font-size: 36rpx;
   font-weight: 500;
   flex: 1;
+  color: #fed7aa;
 }
 
 .me-item-header {
@@ -140,6 +158,9 @@
   border-radius: 0 0 24rpx 24rpx;
   overflow: hidden;
   animation: slideDown 0.3s ease-out;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes slideDown {
@@ -154,7 +175,8 @@
 }
 
 .blessings-scroll {
-  max-height: 600rpx;
+  flex: 1;
+  height: 0;
 }
 
 .blessing-list {
@@ -217,4 +239,21 @@
   margin-top: 8rpx;
   font-size: 24rpx;
   color: #fecaca;
+}
+
+.blessing-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 22rpx;
+  margin-top: 8rpx;
+}
+
+.blessing-author {
+  color: #fed7aa;
+  font-weight: 500;
+}
+
+.blessing-stats-text {
+  color: #f87171;
 }

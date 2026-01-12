@@ -16,6 +16,21 @@ Component({
     myBlessingsHasMore: true,
     /** 是否正在加载中 */
     loadingMyBlessings: false,
+    /** 是否正在下拉刷新 */
+    isRefreshing: false,
+
+    /** 是否展开“我的祝福”（点赞过的）列表 */
+    myLikedBlessingsExpanded: false,
+    /** 我的祝福列表数据 */
+    myLikedBlessings: [] as any[],
+    /** 当前页码（我的祝福） */
+    myLikedBlessingsPage: 1,
+    /** 是否还有更多数据（我的祝福） */
+    myLikedBlessingsHasMore: true,
+    /** 是否正在加载中（我的祝福） */
+    loadingMyLikedBlessings: false,
+    /** 是否正在下拉刷新（我的祝福） */
+    isRefreshingLiked: false,
   },
   pageLifetimes: {
     show() {
@@ -58,9 +73,18 @@ Component({
       }
 
       const expanded = !this.data.myBlessingsExpanded
-      this.setData({
+      
+      // 准备更新的数据对象
+      const updates: any = {
         myBlessingsExpanded: expanded
-      })
+      }
+      
+      // 如果是展开操作，则自动收起“我的祝福”
+      if (expanded) {
+        updates.myLikedBlessingsExpanded = false
+      }
+      
+      this.setData(updates)
 
       // 如果展开且当前没有数据，则发起请求
       if (expanded && this.data.myBlessings.length === 0) {
@@ -71,6 +95,8 @@ Component({
     /** 获取我的祈福列表 */
     fetchMyBlessings(reset = false) {
       if (this.data.loadingMyBlessings) return
+      
+      // 如果不是重置（即加载下一页），且没有更多数据，则停止
       if (!reset && !this.data.myBlessingsHasMore) return
 
       const app = getApp<IAppOption>()
@@ -123,13 +149,126 @@ Component({
         },
         complete: () => {
           this.setData({ loadingMyBlessings: false })
+          // 停止下拉刷新动画（如果正在下拉刷新）
+          this.setData({ isRefreshing: false })
         }
       })
+    },
+
+    /** 下拉刷新 */
+    onPullDownRefreshMyBlessings() {
+      this.setData({ isRefreshing: true })
+      this.fetchMyBlessings(true)
     },
 
     /** 滚动到底部加载更多 */
     onScrollToLowerMyBlessings() {
       this.fetchMyBlessings()
+    },
+
+    /** 点击“我的祝福”（点赞过的） */
+    onTapMyLikedBlessings() {
+      const app = getApp<IAppOption>()
+      if (!app.globalData.userInfo) {
+        wx.showToast({
+          title: '请先登录',
+          icon: 'none'
+        })
+        return
+      }
+
+      const expanded = !this.data.myLikedBlessingsExpanded
+      
+      // 准备更新的数据对象
+      const updates: any = {
+        myLikedBlessingsExpanded: expanded
+      }
+      
+      // 如果是展开操作，则自动收起“我的祈福”
+      if (expanded) {
+        updates.myBlessingsExpanded = false
+      }
+
+      this.setData(updates)
+
+      // 如果展开且当前没有数据，则发起请求
+      if (expanded && this.data.myLikedBlessings.length === 0) {
+        this.fetchMyLikedBlessings(true)
+      }
+    },
+
+    /** 获取我的祝福列表 */
+    fetchMyLikedBlessings(reset = false) {
+      if (this.data.loadingMyLikedBlessings) return
+      
+      // 如果不是重置（即加载下一页），且没有更多数据，则停止
+      if (!reset && !this.data.myLikedBlessingsHasMore) return
+
+      const app = getApp<IAppOption>()
+      const token = app.globalData.token
+
+      if (!token) return
+
+      this.setData({ loadingMyLikedBlessings: true })
+      
+      const page = reset ? 1 : this.data.myLikedBlessingsPage
+      const pageSize = 20
+
+      wx.request({
+        url: `${ME_BACKEND_BASE_URL}/api/blessings/my/liked`,
+        method: 'GET',
+        header: {
+          'Authorization': `Bearer ${token}`
+        },
+        data: {
+          page,
+          pageSize
+        },
+        success: (res: any) => {
+          if (res.statusCode === 200) {
+            const { items, hasMore } = res.data
+            
+            const newItems = items.map((item: any) => ({
+              ...item,
+              // 简单的格式化时间，实际项目中可能需要更复杂的处理
+              createdAtFormatted: item.createdAt ? item.createdAt.replace('T', ' ').substring(0, 16) : ''
+            }))
+
+            this.setData({
+              myLikedBlessings: reset ? newItems : [...this.data.myLikedBlessings, ...newItems],
+              myLikedBlessingsPage: page + 1,
+              myLikedBlessingsHasMore: hasMore,
+            })
+          } else {
+            wx.showToast({
+              title: '获取数据失败',
+              icon: 'none'
+            })
+          }
+        },
+        fail: () => {
+          wx.showToast({
+            title: '网络请求失败',
+            icon: 'none'
+          })
+        },
+        complete: () => {
+          this.setData({ loadingMyLikedBlessings: false })
+          // 停止下拉刷新动画（如果正在下拉刷新）
+          this.setData({ isRefreshingLiked: false })
+        }
+      })
+    },
+
+    /** 下拉刷新（我的祝福） */
+    onPullDownRefreshMyLikedBlessings() {
+      this.setData({ isRefreshingLiked: true })
+      this.fetchMyLikedBlessings(true)
+    },
+
+    /** 滚动到底部加载更多（我的祝福） */
+    onScrollToLowerMyLikedBlessings() {
+      this.fetchMyLikedBlessings()
     }
   },
 })

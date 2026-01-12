@@ -28,50 +28,97 @@
       </view>
     </view>
     
-    <view class="me-item" bindtap="onTapMyBlessings">
-      <view class="me-item-header">
-        <text class="me-item-title">我的祈福</text>
-        <text class="arrow {{myBlessingsExpanded ? 'arrow-up' : ''}}">▼</text>
-      </view>
-      <text class="me-item-desc">看看自己发过的心愿</text>
-    </view>
-
-    <!-- 我的祈福列表展开区域 -->
-    <view class="my-blessings-container" wx:if="{{myBlessingsExpanded}}">
-      <scroll-view 
-        scroll-y 
-        class="blessings-scroll" 
-        bindscrolltolower="onScrollToLowerMyBlessings"
-        lower-threshold="50"
-      >
-        <view class="blessing-list">
-          <view class="blessing-card" wx:for="{{myBlessings}}" wx:key="id">
-            <view class="blessing-content">{{item.content}}</view>
-            <view class="blessing-meta">
-              <text class="blessing-type tag-{{item.type}}">{{item.type}}</text>
-              <text class="blessing-time">{{item.createdAtFormatted}}</text>
-            </view>
-            <view class="blessing-stats">
-              <text>❤️ {{item.likeCount}}</text>
-            </view>
-          </view>
-          
-          <view class="loading-more" wx:if="{{loadingMyBlessings}}">
-            <text>加载中...</text>
-          </view>
-          <view class="no-more" wx:if="{{!myBlessingsHasMore && myBlessings.length > 0}}">
-            <text>没有更多了</text>
-          </view>
-          <view class="empty-state" wx:if="{{!loadingMyBlessings && myBlessings.length === 0}}">
-            <text>暂无祈福记录</text>
-          </view>
+    <!-- 列表容器：使用 flex:1 占据剩余空间，内部管理两个列表的展开/收起 -->
+    <view class="me-lists-wrapper">
+      <view class="me-item" bindtap="onTapMyBlessings">
+        <view class="me-item-header">
+          <text class="me-item-title">我的祈福</text>
+          <text class="arrow {{myBlessingsExpanded ? 'arrow-up' : ''}}">▼</text>
         </view>
-      </scroll-view>
-    </view>
+        <text class="me-item-desc">看看自己发过的心愿</text>
+      </view>
 
-    <view class="me-item">
-      <text class="me-item-title">我的祝福</text>
-      <text class="me-item-desc">看看曾经送上的美好祝福</text>
+      <!-- 我的祈福列表展开区域 -->
+      <view class="my-blessings-container" wx:if="{{myBlessingsExpanded}}">
+        <scroll-view 
+          scroll-y 
+          class="blessings-scroll" 
+          bindscrolltolower="onScrollToLowerMyBlessings"
+          lower-threshold="50"
+          refresher-enabled="{{true}}"
+          refresher-triggered="{{isRefreshing}}"
+          bindrefresherrefresh="onPullDownRefreshMyBlessings"
+        >
+          <view class="blessing-list">
+            <view class="blessing-card" wx:for="{{myBlessings}}" wx:key="id">
+              <view class="blessing-content">{{item.content}}</view>
+              <view class="blessing-info-row">
+                <text class="blessing-author">@{{item.userNick || '神秘人'}}</text>
+                <text class="blessing-type tag-{{item.type}}">{{item.type}}</text>
+              </view>
+              <view class="blessing-info-row">
+                <text class="blessing-time">{{item.createdAtFormatted}}</text>
+                <text class="blessing-stats-text">❤️ {{item.likeCount}}</text>
+              </view>
+            </view>
+            
+            <view class="loading-more" wx:if="{{loadingMyBlessings}}">
+              <text>加载中...</text>
+            </view>
+            <view class="no-more" wx:if="{{!myBlessingsHasMore && myBlessings.length > 0}}">
+              <text>没有更多了</text>
+            </view>
+            <view class="empty-state" wx:if="{{!loadingMyBlessings && myBlessings.length === 0}}">
+              <text>暂无祈福记录</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <view class="me-item" bindtap="onTapMyLikedBlessings">
+        <view class="me-item-header">
+          <text class="me-item-title">我的祝福</text>
+          <text class="arrow {{myLikedBlessingsExpanded ? 'arrow-up' : ''}}">▼</text>
+        </view>
+        <text class="me-item-desc">看看曾经送上的美好祝福</text>
+      </view>
+
+      <!-- 我的祝福（点赞）列表展开区域 -->
+      <view class="my-blessings-container" wx:if="{{myLikedBlessingsExpanded}}">
+        <scroll-view 
+          scroll-y 
+          class="blessings-scroll" 
+          bindscrolltolower="onScrollToLowerMyLikedBlessings"
+          lower-threshold="50"
+          refresher-enabled="{{true}}"
+          refresher-triggered="{{isRefreshingLiked}}"
+          bindrefresherrefresh="onPullDownRefreshMyLikedBlessings"
+        >
+          <view class="blessing-list">
+            <view class="blessing-card" wx:for="{{myLikedBlessings}}" wx:key="id">
+              <view class="blessing-content">{{item.content}}</view>
+              <view class="blessing-info-row">
+                <text class="blessing-author">@{{item.userNick || '神秘人'}}</text>
+                <text class="blessing-type tag-{{item.type}}">{{item.type}}</text>
+              </view>
+              <view class="blessing-info-row">
+                <text class="blessing-time">{{item.createdAtFormatted}}</text>
+                <text class="blessing-stats-text">❤️ {{item.likeCount}}</text>
+              </view>
+            </view>
+            
+            <view class="loading-more" wx:if="{{loadingMyLikedBlessings}}">
+              <text>加载中...</text>
+            </view>
+            <view class="no-more" wx:if="{{!myLikedBlessingsHasMore && myLikedBlessings.length > 0}}">
+              <text>没有更多了</text>
+            </view>
+            <view class="empty-state" wx:if="{{!loadingMyLikedBlessings && myLikedBlessings.length === 0}}">
+              <text>暂无点赞记录</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
     </view>
   </view>
 </view>
