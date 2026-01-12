@@ -1,0 +1,77 @@
+<!-- “我”页根容器，展示与当前用户相关的信息与入口 -->
+<view class="me-page">
+  <!-- 头部展示昵称占位与页面标题 -->
+  <view class="me-header">
+    <view>
+      <text class="me-title">我的宇宙角落</text>
+    </view>
+    <text class="me-subtitle">这里会收集你的祈福和足迹</text>
+  </view>
+
+  <!-- 功能入口区域，后续可以接入真实数据 -->
+  <view class="me-section">
+    <!-- 未登录时显示登录按钮 -->
+    <view class="login-entry" wx:if="{{!userInfo}}">
+      <button class="login-button" bindtap="onTapLogin">
+        <text>登录 / 注册</text>
+      </button>
+    </view>
+    
+    <!-- 登录后显示用户信息 -->
+    <view class="user-info-card" wx:else>
+      <view class="avatar-placeholder">
+        <text>{{userInfo.nick[0]}}</text>
+      </view>
+      <view class="user-details">
+        <text class="user-nick">{{userInfo.nick}}</text>
+        <text class="user-account">终端代号: {{userInfo.account}}</text>
+      </view>
+    </view>
+    
+    <view class="me-item" bindtap="onTapMyBlessings">
+      <view class="me-item-header">
+        <text class="me-item-title">我的祈福</text>
+        <text class="arrow {{myBlessingsExpanded ? 'arrow-up' : ''}}">▼</text>
+      </view>
+      <text class="me-item-desc">看看自己发过的心愿</text>
+    </view>
+
+    <!-- 我的祈福列表展开区域 -->
+    <view class="my-blessings-container" wx:if="{{myBlessingsExpanded}}">
+      <scroll-view 
+        scroll-y 
+        class="blessings-scroll" 
+        bindscrolltolower="onScrollToLowerMyBlessings"
+        lower-threshold="50"
+      >
+        <view class="blessing-list">
+          <view class="blessing-card" wx:for="{{myBlessings}}" wx:key="id">
+            <view class="blessing-content">{{item.content}}</view>
+            <view class="blessing-meta">
+              <text class="blessing-type tag-{{item.type}}">{{item.type}}</text>
+              <text class="blessing-time">{{item.createdAtFormatted}}</text>
+            </view>
+            <view class="blessing-stats">
+              <text>❤️ {{item.likeCount}}</text>
+            </view>
+          </view>
+          
+          <view class="loading-more" wx:if="{{loadingMyBlessings}}">
+            <text>加载中...</text>
+          </view>
+          <view class="no-more" wx:if="{{!myBlessingsHasMore && myBlessings.length > 0}}">
+            <text>没有更多了</text>
+          </view>
+          <view class="empty-state" wx:if="{{!loadingMyBlessings && myBlessings.length === 0}}">
+            <text>暂无祈福记录</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="me-item">
+      <text class="me-item-title">我的祝福</text>
+      <text class="me-item-desc">看看曾经送上的美好祝福</text>
+    </view>
+  </view>
+</view>

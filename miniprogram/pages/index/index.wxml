@@ -1,0 +1,33 @@
+<view class="page">
+  <view class="header">
+    <view class="header-title-row">
+      <text class="title">赛博祈福墙</text>
+      <text class="title-badge">Beta</text>
+    </view>
+    <text class="subtitle">已汇聚 {{blessingTotal}} 条心愿</text>
+  </view>
+
+  <!-- 祈福弹幕区域 -->
+  <view class="wall-scroll">
+    <!-- 遍历当前正在飞行的弹幕实例，按轨道位置和动画时长渲染 -->
+    <block wx:for="{{bullets}}" wx:key="bulletId">
+      <!-- 单条祈福弹幕卡片，绝对定位到对应轨道并绑定点击事件 -->
+      <!-- 单条祈福弹幕卡片：整张卡片的外层容器 -->
+      <view
+        class="blessing-card danmaku-card"
+        style="top: {{item.top}}rpx; animation-duration: {{item.duration}}ms;"
+        data-id="{{item.blessingId}}"
+        bindtap="onTapBlessing"
+      >
+        <!-- 卡片正文区域：承载完整祈福文案 -->
+        <view class="card-content">
+          <text class="content-text">{{item.content}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view class="create-button" bindtap="onTapCreate">
+    <text>我要祈福</text>
+  </view>
+</view>

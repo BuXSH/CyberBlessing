@@ -1,0 +1,31 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/create/index",
+    "pages/me/index",
+    "pages/login/index",
+    "pages/register/index"
+  ],
+  "tabBar": {
+    "color": "#fecaca",
+    "selectedColor": "#ffffff",
+    "backgroundColor": "#7f1d1d",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "祈福墙"
+      },
+      {
+        "pagePath": "pages/me/index",
+        "text": "我"
+      }
+    ]
+  },
+  "window": {
+    "navigationStyle": "custom"
+  },
+  "style": "v2",
+  "componentFramework": "glass-easel",
+  "lazyCodeLoading": "requiredComponents"
+}

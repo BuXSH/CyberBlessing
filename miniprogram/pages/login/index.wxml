@@ -1,0 +1,41 @@
+<view class="login-page">
+  <view class="login-header">
+    <text class="login-title">接入赛博网络</text>
+    <text class="login-subtitle">身份验证 / 权限请求</text>
+  </view>
+
+  <view class="login-form">
+    <view class="form-item">
+      <text class="form-label">终端代号</text>
+      <input 
+        class="form-input" 
+        placeholder="请输入账号" 
+        placeholder-class="input-placeholder"
+        data-field="username"
+        bindinput="onInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">访问密钥</text>
+      <input 
+        class="form-input" 
+        password 
+        placeholder="请输入密码" 
+        placeholder-class="input-placeholder"
+        data-field="password"
+        bindinput="onInput"
+      />
+    </view>
+  </view>
+
+  <view class="login-footer">
+    <button class="submit-button" bindtap="onLogin" disabled="{{!canSubmit}}">
+      <text>确认连接</text>
+    </button>
+    
+    <view class="register-link" bindtap="onRegister">
+      <text>申请新的终端身份 ></text>
+    </view>
+  </view>
+</view>

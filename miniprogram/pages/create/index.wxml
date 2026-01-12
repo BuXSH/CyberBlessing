@@ -1,0 +1,47 @@
+<view class="create-page">
+  <view class="create-header">
+    <view>
+      <text class="create-title">写下一份新的心愿</text>
+    </view>
+    <text class="create-subtitle">它会悄悄飞到赛博祈福墙上</text>
+  </view>
+
+  <view class="create-form">
+    <view class="form-item">
+      <text class="form-label">心愿类型</text>
+      <picker mode="selector" range="{{typeOptions}}" value="{{typeIndex}}" bindchange="onTypeChange">
+        <view class="picker-display">
+          <text>{{typeOptions[typeIndex]}}</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">祈福内容</text>
+      <textarea
+        class="form-textarea"
+        value="{{content}}"
+        placeholder="想对未来的自己、家人或世界说点什么？"
+        maxlength="200"
+        bindinput="onContentInput"
+      />
+      <view class="textarea-counter">
+        <text>{{content.length}} / 200</text>
+      </view>
+    </view>
+
+    <view class="form-item form-row">
+      <view class="form-row-left">
+        <text class="form-label">以匿名方式发送</text>
+      </view>
+      <switch checked="{{isAnonymous}}" bindchange="onAnonymousChange" />
+    </view>
+  </view>
+
+  <view class="create-footer">
+    <button class="submit-button" bindtap="onSubmit" disabled="{{!canSubmit}}">
+      <text>送出祝愿</text>
+    </button>
+  </view>
+</view>
+

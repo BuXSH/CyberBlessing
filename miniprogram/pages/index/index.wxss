@@ -1,0 +1,120 @@
+page {
+  height: 100vh; /* 页面高度占满整个视口高度 */
+  background: radial-gradient(circle at 0% 0%, #f97373 0, #22010a 40%) fixed; /* 左上角辐射的红色渐变背景，营造喜庆氛围 */
+  background-color: #22010a; /* 渐变之外的整体背景基色，深红偏棕色 */
+  color: #e5e7eb; /* 页面默认文字颜色为浅灰，保证在深色背景上可读 */
+}
+
+.page {
+  height: 100%; /* 让根容器在 page 内占满剩余高度 */
+  display: flex; /* 使用弹性布局方便垂直方向排版 */
+  flex-direction: column; /* 垂直从上到下依次排列子元素 */
+  box-sizing: border-box; /* 让 padding 计入整体宽高，避免布局溢出 */
+}
+
+.header {
+  padding: 100rpx 32rpx 0rpx 32rpx; /* 上 32 → 右 32 → 下 40 → 左 32 */
+}
+
+.header-title-row {
+  display: flex; /* 标题行使用水平弹性布局 */
+  align-items: baseline; /* 标题文字与 Beta 徽标按文字基线对齐 */
+}
+
+.title {
+  font-size: 60rpx; /* 标题字号偏大，增强主标题存在感 */
+  font-weight: 600; /* 半粗体，让标题更有力量感 */
+  letter-spacing: 4rpx; /* 字间距稍大，营造科技/仪式感 */
+}
+
+.title-badge {
+  margin-left: 12rpx; /* 徽标与标题之间留出一点水平空隙 */
+  padding: 2rpx 12rpx; /* 徽标内部上下左右间距，形成胶囊形状 */
+  border-radius: 999rpx; /* 极大圆角，做成圆角胶囊效果 */
+  font-size: 20rpx; /* 徽标文字略小，不抢主标题注意力 */
+  color: #fed7aa; /* 徽标文字为偏金色，突出“标签感” */
+  border: 1rpx solid rgba(248, 171, 119, 0.9); /* 金色边框，强化 Beta 徽标视觉边界 */
+}
+
+.subtitle {
+  margin-top: 8rpx; /* 副标题与标题之间的垂直间距 */
+  font-size: 24rpx; /* 副标题字号适中，便于阅读统计信息 */
+  color: #9ca3af; /* 中性灰色，让副标题信息弱化一点 */
+}
+
+/** 祈福带滚动区域背景设为纯白，便于定位滚动区域并突出卡片 */
+.wall-scroll {
+  flex: 1; /* 在垂直方向上占据 header 下方的剩余空间 */
+  margin-top: 24rpx; /* 与上方标题区域保持一定间距 */
+  margin-bottom: 24rpx; /* 下方间距 24rpx */
+  /* background-color: #000000; */
+  overflow: hidden; /* 超出容器范围的内容隐藏，用于制作“弹幕屏幕”效果 */
+  position: relative; /* 作为绝对定位弹幕卡片的定位参考容器 */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 10%,
+    #000 90%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 10%,
+    #000 90%,
+    transparent 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.blessing-card {
+  padding: 0rpx 20rpx 0rpx 20rpx; /* 上 0 下 0，修正视觉重心 */
+  border-radius: 20rpx; /* 更大的圆角，让卡片整体更像一条弹幕条 */
+  overflow: hidden; /* 超出卡片边界的光效或内容隐藏，保持卡片干净 */
+  white-space: nowrap; /* 强制文字不换行，防止在绝对定位时被挤压成竖排 */
+}
+
+/** 单条弹幕卡片：继承祈福卡片样式，增加绝对定位与横向动画 */
+.danmaku-card {
+  position: absolute; /* 相对 wall-scroll 进行绝对定位 */
+  left: 100%; /* 初始位置固定在屏幕右侧边缘外，确保从右侧进入 */
+  animation-name: danmaku-move; /* 使用统一的弹幕横向位移动画 */
+  animation-timing-function: linear; /* 匀速移动，贴近真实弹幕效果 */
+  animation-iteration-count: 1; /* 每条弹幕只播放一次 */
+  animation-fill-mode: forwards; /* 动画结束后保持在终点位置，避免闪回起点 */
+}
+
+/** 弹幕横向位移动画：从右向左平移，确保位移距离涵盖“屏幕宽度+自身宽度” */
+@keyframes danmaku-move {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /** 位移总量 = 自身宽度(100%) + 屏幕宽度(100vw)，保证无论长短都能刚好完全飞出屏幕 */
+    transform: translateX(calc(-100% - 100vw));
+  }
+}
+
+.content-text {
+  font-size: 34rpx; /* 祈福正文的主要阅读字号 */
+  line-height: 1.2; /* 行高与字号相同，减少向下视觉偏移 */
+  color: #ffffff; 
+}
+
+.create-button {
+  position: fixed; /* 悬浮在页面右下角，不随内容滚动 */
+  right: 40rpx; /* 距离右边缘的固定间距 */
+  bottom: 60rpx; /* 距离底部的固定间距，避开系统手势区域 */
+  width: 176rpx; /* 按钮固定宽度 */
+  height: 80rpx; /* 按钮固定高度 */
+  border-radius: 999rpx; /* 圆角胶囊形状，符合主按钮气质 */
+  background: linear-gradient(135deg, #b91c1c, #f97316); /* 红橙渐变背景，突出主要行动按钮 */
+  box-shadow: 0 20rpx 40rpx rgba(15, 23, 42, 0.6); /* 向上投影，营造悬浮感 */
+  display: flex; /* 按钮内部使用弹性布局 */
+  align-items: center; /* 垂直居中文本 */
+  justify-content: center; /* 水平居中文本 */
+  color: #ffffff; /* 按钮文字为近白色，与渐变背景形成对比 */
+}
+
+
