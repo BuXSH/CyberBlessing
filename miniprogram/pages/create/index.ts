@@ -52,6 +52,9 @@ Component({
 
     /** 发布心愿内容到服务器后端，并在成功后返回祈福墙页面 */
     onSubmit() {
+      // 添加震动反馈
+      wx.vibrateShort({ type: 'light' })
+
       if (!this.data.canSubmit) {
         return
       }

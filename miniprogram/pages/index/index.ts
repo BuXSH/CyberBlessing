@@ -274,6 +274,9 @@ Component({
 
     /** 点击“点赞”，先本地自增点赞数量并同步到后端 */
     onTapSendEnergy(e: any) {
+      // 添加震动反馈
+      wx.vibrateShort({ type: 'light' })
+
       const id = e.currentTarget.dataset.id
       if (!id) {
         return
@@ -400,6 +403,9 @@ Component({
     },
     /** 点击“我要祈福”入口，跳转到发起祈福页 */
     onTapCreate() {
+      // 添加震动反馈
+      wx.vibrateShort({ type: 'light' })
+
       wx.navigateTo({
         url: '/pages/create/index',
       })
