@@ -31,6 +31,10 @@ Component({
     loadingMyLikedBlessings: false,
     /** 是否正在下拉刷新（我的祝福） */
     isRefreshingLiked: false,
+    
+    /** 滑动删除相关 */
+    swipingItemId: '',
+    swipeOffset: 0,
   },
   pageLifetimes: {
     show() {
@@ -49,6 +53,11 @@ Component({
     }
   },
   methods: {
+    // 触摸起始X坐标，不需要响应式
+    startX: 0 as any,
+    // 是否允许滑动（长按触发后为true）
+    canSwipe: false as any,
+
     onTapLogin() {
       wx.navigateTo({
         url: '/pages/login/index',
@@ -71,6 +80,9 @@ Component({
         })
         return
       }
+
+      // 添加震动反馈
+      wx.vibrateShort({ type: 'light' })
 
       const expanded = !this.data.myBlessingsExpanded
       
@@ -166,7 +178,7 @@ Component({
       this.fetchMyBlessings()
     },
 
-    /** 点击“我的祝福”（点赞过的） */
+    /** 点击“我的祝福”（我点赞的） */
     onTapMyLikedBlessings() {
       const app = getApp<IAppOption>()
       if (!app.globalData.userInfo) {
@@ -176,6 +188,9 @@ Component({
         })
         return
       }
+
+      // 添加震动反馈
+      wx.vibrateShort({ type: 'light' })
 
       const expanded = !this.data.myLikedBlessingsExpanded
       
@@ -262,6 +277,9 @@ Component({
 
     /** 取消点赞 */
     onTapUnlike(e: any) {
+      // 添加震动反馈
+      wx.vibrateShort({ type: 'light' })
+
       const id = e.currentTarget.dataset.id
       if (!id) return
 
@@ -323,6 +341,106 @@ Component({
     /** 滚动到底部加载更多（我的祝福） */
     onScrollToLowerMyLikedBlessings() {
       this.fetchMyLikedBlessings()
+    },
+
+    /** 滑动开始 */
+    onSwipeStart(e: any) {
+      if (e.touches.length === 1) {
+        // @ts-ignore
+        this.startX = e.touches[0].clientX
+        this.canSwipe = false // 重置滑动状态
+        this.setData({
+          swipingItemId: e.currentTarget.dataset.id,
+          swipeOffset: 0
+        })
+      }
+    },
+
+    /** 长按触发滑动准备 */
+    onSwipeLongPress(e: any) {
+      this.canSwipe = true
+      wx.vibrateShort({ type: 'medium' })
+    },
+
+    /** 滑动中 */
+    onSwipeMove(e: any) {
+      if (!this.canSwipe) return // 未触发长按不响应滑动
+
+      if (e.touches.length === 1) {
+        // @ts-ignore
+        const currentX = e.touches[0].clientX
+        // @ts-ignore
+        const diff = currentX - this.startX
+        
+        // 只允许左滑
+        if (diff < 0) {
+          // 最大滑动距离限制
+          const offset = Math.max(diff, -120) 
+          this.setData({
+            swipeOffset: offset
+          })
+        }
+      }
+    },
+
+    /** 滑动结束 */
+    onSwipeEnd(e: any) {
+      const threshold = -60 // 触发阈值
+      const id = e.currentTarget.dataset.id
+      
+      if (this.data.swipeOffset < threshold) {
+        // 松手滑回去
+        this.setData({ swipeOffset: 0 })
+        
+        wx.showModal({
+          title: '提示',
+          content: '确定要删除这条祈福吗？',
+          success: (res) => {
+            if (res.confirm) {
+              this.doDeleteBlessing(id)
+            }
+          }
+        })
+      } else {
+        // 未达到阈值，回弹
+        this.setData({ swipeOffset: 0 })
+      }
+    },
+
+    /** 执行删除 */
+    doDeleteBlessing(id: string) {
+      const app = getApp<IAppOption>()
+      const token = app.globalData.token
+      if (!token) return
+
+      wx.showLoading({ title: '删除中' })
+      
+      wx.request({
+        url: `${ME_BACKEND_BASE_URL}/api/blessings/${id}`,
+        method: 'DELETE',
+        header: { 'Authorization': `Bearer ${token}` },
+        success: (res: any) => {
+          wx.hideLoading()
+          if (res.statusCode === 200) {
+            wx.showToast({ title: '已删除', icon: 'success' })
+            // 从本地列表中移除
+            const newList = this.data.myBlessings.filter((item: any) => item.id !== id)
+            this.setData({ myBlessings: newList })
+          } else {
+            if (res.statusCode === 404) {
+               wx.showToast({ title: '祈福不存在', icon: 'none' })
+            } else if (res.statusCode === 403) {
+               wx.showToast({ title: '无权删除', icon: 'none' })
+            } else {
+               wx.showToast({ title: '删除失败', icon: 'none' })
+            }
+          }
+        },
+        fail: () => {
+          wx.hideLoading()
+          wx.showToast({ title: '网络错误', icon: 'none' })
+        }
+      })
     }
   },
 })

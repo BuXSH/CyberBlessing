@@ -50,15 +50,27 @@
           bindrefresherrefresh="onPullDownRefreshMyBlessings"
         >
           <view class="blessing-list">
-            <view class="blessing-card" wx:for="{{myBlessings}}" wx:key="id">
-              <view class="blessing-content">{{item.content}}</view>
-              <view class="blessing-info-row">
-                <text class="blessing-author">@{{item.userNick || '神秘人'}}</text>
-                <text class="blessing-type tag-{{item.type}}">{{item.type}}</text>
+            <view class="blessing-item-wrapper" wx:for="{{myBlessings}}" wx:key="id">
+              <view class="delete-action-bg">
+                <text class="delete-icon">删除</text>
               </view>
-              <view class="blessing-info-row">
-                <text class="blessing-time">{{item.createdAtFormatted}}</text>
-                <text class="blessing-stats-text">❤️ {{item.likeCount}}</text>
+              <view class="blessing-card" 
+                bindtouchstart="onSwipeStart" 
+                bindtouchmove="onSwipeMove" 
+                bindtouchend="onSwipeEnd"
+                bindlongpress="onSwipeLongPress"
+                data-id="{{item.id}}"
+                style="transform: translateX({{item.id === swipingItemId ? swipeOffset : 0}}px); transition: {{item.id === swipingItemId ? 'none' : 'transform 0.3s ease-out'}};"
+              >
+                <view class="blessing-content">{{item.content}}</view>
+                <view class="blessing-info-row">
+                  <text class="blessing-author">@{{item.userNick || '神秘人'}}</text>
+                  <text class="blessing-type tag-{{item.type}}">{{item.type}}</text>
+                </view>
+                <view class="blessing-info-row">
+                  <text class="blessing-time">{{item.createdAtFormatted}}</text>
+                  <text class="blessing-stats-text">❤️ {{item.likeCount}}</text>
+                </view>
               </view>
             </view>
             

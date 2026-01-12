@@ -183,12 +183,57 @@
   padding: 20rpx;
 }
 
+/* New Wrapper for Slide Delete */
+.blessing-item-wrapper {
+  position: relative;
+  margin-bottom: 16rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.delete-action-bg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 40rpx;
+  z-index: 1;
+  border-radius: 12rpx;
+}
+
+.delete-icon {
+  color: white;
+  font-weight: bold;
+  font-size: 28rpx;
+}
+
 .blessing-card {
   background: rgba(255, 255, 255, 0.08);
   border-radius: 12rpx;
   padding: 20rpx;
   margin-bottom: 16rpx;
   border: 1px solid rgba(254, 202, 202, 0.1);
+  position: relative;
+  z-index: 2;
+  /* Ensure background covers the delete action when not swiped */
+  background-color: #3a151b; /* Adjusted to blend with dark theme */
+}
+
+/* In wrapper, remove margin to avoid double spacing, let wrapper handle it */
+.blessing-item-wrapper .blessing-card {
+  margin-bottom: 0;
+}
+
+/* Need to ensure the card background is opaque enough to hide the red layer */
+.blessing-card {
+    /* Using a solid color that matches the visual "glass" effect on dark bg */
+    background: #3a151b; /* Adjusted to blend with dark theme */
+    /* Or keep rgba but rely on parent bg? No, parent has red layer. */
 }
 
 .blessing-content {
